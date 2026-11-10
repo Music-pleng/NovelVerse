@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Novel World | อ่านนิยายฟรี</title>
+<style>
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #faf8fc;
+  color: #302641;
+}
+header {
+  background: #39264f;
+  color: white;
+  padding: 25px 7%;
+}
+header h1 { margin: 0; font-size: 30px; }
+header p { color: #e0d4ee; }
+nav {
+  background: #50366b;
+  padding: 13px 7%;
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+nav a { color: white; text-decoration: none; }
+main { max-width: 1100px; margin: auto; padding: 25px; }
+.search {
+  width: 100%;
+  padding: 14px;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  font-size: 16px;
+}
+h2 { margin-top: 30px; }
+.categories {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.categories button {
+  border: 0;
+  border-radius: 20px;
+  padding: 10px 16px;
+  background: #eee5f7;
+  color: #50366b;
+  cursor: pointer;
+}
+.categories button.active {
+  background: #50366b;
+  color: white;
+}
+.books {
+  display: grid;
+  grid-template-columns: repeat(auto-fit,minmax(160px,1fr));
+  gap: 18px;
+}
+.book {
+  background: white;
+  border-radius: 12px;
+  padding: 14px;
+  box-shadow: 0 2px 10px #0000000d;
+}
+.cover {
+  height: 190px;
+  background: linear-gradient(145deg,#8b6aa9,#e6b8ca);
+  border-radius: 8px;
+  display: grid;
+  place-items: center;
+  color: white;
+  font-size: 28px;
+}
+.book h3 { font-size: 16px; }
+.book p { color: #777; font-size: 13px; }
+.free { color: #27864e; font-weight: bold; }
+footer {
+  background: #39264f;
+  color: white;
+  text-align: center;
+  padding: 25px;
+  margin-top: 50px;
+}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>📚 NOVEL WORLD</h1>
+  <p>โลกแห่งนิยาย อ่านฟรี จินตนาการไร้ขีดจำกัด</p>
+</header>
+
+<nav>
+  <a href="#">หน้าแรก</a>
+  <a href="#categories">หมวดหมู่นิยาย</a>
+  <a href="#novels">นิยายทั้งหมด</a>
+  <a href="#about">เกี่ยวกับเรา</a>
+</nav>
+
+<main>
+  <h2>ค้นหานิยายที่คุณชอบ</h2>
+  <input class="search" id="search"
+    placeholder="พิมพ์ชื่อเรื่องนิยาย..."
+    oninput="renderBooks()">
+
+  <h2 id="categories">หมวดหมู่นิยาย</h2>
+  <div class="categories" id="categoriesList"></div>
+
+  <h2 id="novels">📖 นิยายแนะนำ</h2>
+  <div class="books" id="books"></div>
+</main>
+
+<footer id="about">
+  <h3>NOVEL WORLD</h3>
+  <p>พื้นที่สำหรับนักอ่านและนักเขียน</p>
+  <p>อ่านฟรีทุกเรื่อง ทุกจินตนาการ</p>
+</footer>
+
+<script>
+const genres = [
+  "ทั้งหมด","โรแมนซ์","แฟนตาซี","วาย (BL)",
+  "ยูริ (GL)","สืบสวน","สยองขวัญ","ดราม่า","รักวัยรุ่น"
+];
+
+const novels = [
+  {title:"คำสาปรักแห่งจันทรา",genre:"แฟนตาซี"},
+  {title:"หัวใจดวงนี้เป็นของเธอ",genre:"โรแมนซ์"},
+  {title:"ระหว่างเรา",genre:"วาย (BL)"},
+  {title:"เธอคือแสงดาว",genre:"ยูริ (GL)"},
+  {title:"ปริศนาในคืนฝนตก",genre:"สืบสวน"},
+  {title:"เสียงจากห้องที่ปิดตาย",genre:"สยองขวัญ"},
+  {title:"วันที่เราไม่เข้าใจ",genre:"ดราม่า"},
+  {title:"รักแรกในฤดูร้อน",genre:"รักวัยรุ่น"}
+];
+
+let selected = "ทั้งหมด";
+
+function renderCategories() {
+  document.getElementById("categoriesList").innerHTML =
+    genres.map(g =>
+      `<button class="${g===selected?'active':''}"
+       onclick="selectGenre('${g}')">${g}</button>`
+    ).join("");
+}
+
+function selectGenre(g) {
+  selected = g;
+  renderCategories();
+  renderBooks();
+}
+
+function renderBooks() {
+  const q = document.getElementById("search").value.toLowerCase();
+  const filtered = novels.filter(n =>
+    (selected==="ทั้งหมด" || n.genre===selected) &&
+    n.title.toLowerCase().includes(q)
+  );
+
+  document.getElementById("books").innerHTML =
+    filtered.length ? filtered.map(n => `
+      <article class="book">
+        <div class="cover">📖</div>
+        <h3>${n.title}</h3>
+        <p>${n.genre}</p>
+        <p class="free">อ่านฟรี</p>
+      </article>
+    `).join("") : "<p>ไม่พบนิยายที่ค้นหา</p>";
+}
+
+renderCategories();
+renderBooks();
+</script>
+
+</body>
+</html>
